@@ -59,7 +59,7 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Welcome, you can say "play audio" to start listening to music. What would you like to do?';
+        const speakOutput = 'Benvenuto, puoi dire "riproduci audio" per iniziare ad ascoltare musica. Cosa vorresti fare?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -105,7 +105,7 @@ const PlayAudioIntentHandler = {
             };
         } catch (error) {
             console.error('Error fetching latest URL:', error);
-            const speakOutput = 'Sorry, I could not retrieve the latest music stream from the API. Please check your setup.';
+            const speakOutput = 'Scusa, non sono riuscito a recuperare l\'ultimo stream musicale dall\'API. Controlla la tua configurazione.';
             return handlerInput.responseBuilder
                 .speak(speakOutput)
                 .getResponse();
@@ -167,7 +167,7 @@ const UnsupportedAudioIntentHandler = {
                 );
     },
     async handle(handlerInput) {
-        const speakOutput = 'Sorry, I can\'t support that yet.';
+        const speakOutput = 'Scusa, non posso ancora supportare questa funzione.';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -181,7 +181,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'You can say "play audio" to start playing music! How can I help?';
+        const speakOutput = 'Puoi dire "riproduci audio" per iniziare a riprodurre musica! Come posso aiutarti?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -197,7 +197,7 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = 'Goodbye!';
+        const speakOutput = 'Arrivederci!';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -350,7 +350,7 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Sorry, I don\'t know about that. Please try again.';
+        const speakOutput = 'Scusa, non conosco questo comando. Per favore riprova.';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -384,7 +384,7 @@ const IntentReflectorHandler = {
     },
     handle(handlerInput) {
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = `You just triggered ${intentName}`;
+        const speakOutput = `Hai appena attivato ${intentName}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -402,7 +402,7 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = 'Sorry, I had trouble doing what you asked. Please try again.';
+        const speakOutput = 'Scusa, ho avuto problemi a eseguire la tua richiesta. Per favore riprova.';
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
         return handlerInput.responseBuilder
