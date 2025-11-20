@@ -17,6 +17,37 @@ const MA_HOSTNAME  = '<DEFINE-YOUR-MA-HOSTNAME-HERE>';  // Replace with your Mus
 const API_USERNAME = undefined; //Replace with your username
 const API_PASSWORD = undefined; //Replace with your password
 
+// Localization strings
+const languageStrings = {
+    'en-US': {
+        WELCOME_MESSAGE: 'Welcome, you can say "play audio" to start listening to music. What would you like to do?',
+        ERROR_RETRIEVING_STREAM: 'Sorry, I could not retrieve the latest music stream from the API. Please check your setup.',
+        UNSUPPORTED_FEATURE: 'Sorry, I can\'t support that yet.',
+        HELP_MESSAGE: 'You can say "play audio" to start playing music! How can I help?',
+        GOODBYE_MESSAGE: 'Goodbye!',
+        FALLBACK_MESSAGE: 'Sorry, I don\'t know about that. Please try again.',
+        INTENT_REFLECTOR: 'You just triggered',
+        ERROR_MESSAGE: 'Sorry, I had trouble doing what you asked. Please try again.'
+    },
+    'it-IT': {
+        WELCOME_MESSAGE: 'Benvenuto, puoi dire "riproduci audio" per iniziare ad ascoltare musica. Cosa vorresti fare?',
+        ERROR_RETRIEVING_STREAM: 'Scusa, non sono riuscito a recuperare l\'ultimo stream musicale dall\'API. Controlla la tua configurazione.',
+        UNSUPPORTED_FEATURE: 'Scusa, non posso ancora supportare questa funzione.',
+        HELP_MESSAGE: 'Puoi dire "riproduci audio" per iniziare a riprodurre musica! Come posso aiutarti?',
+        GOODBYE_MESSAGE: 'Arrivederci!',
+        FALLBACK_MESSAGE: 'Scusa, non conosco questo comando. Per favore riprova.',
+        INTENT_REFLECTOR: 'Hai appena attivato',
+        ERROR_MESSAGE: 'Scusa, ho avuto problemi a eseguire la tua richiesta. Per favore riprova.'
+    }
+};
+
+// Helper function to get localized string
+function getLocalizedString(handlerInput, key) {
+    const locale = Alexa.getLocale(handlerInput.requestEnvelope);
+    const strings = languageStrings[locale] || languageStrings['en-US'];
+    return strings[key] || key;
+}
+
 function getLatestUrl() {
     return new Promise((resolve, reject) => {
         const headers = {};
@@ -59,7 +90,7 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Benvenuto, puoi dire "riproduci audio" per iniziare ad ascoltare musica. Cosa vorresti fare?';
+        const speakOutput = getLocalizedString(handlerInput, 'WELCOME_MESSAGE');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -105,7 +136,7 @@ const PlayAudioIntentHandler = {
             };
         } catch (error) {
             console.error('Error fetching latest URL:', error);
-            const speakOutput = 'Scusa, non sono riuscito a recuperare l\'ultimo stream musicale dall\'API. Controlla la tua configurazione.';
+            const speakOutput = getLocalizedString(handlerInput, 'ERROR_RETRIEVING_STREAM');
             return handlerInput.responseBuilder
                 .speak(speakOutput)
                 .getResponse();
@@ -167,7 +198,7 @@ const UnsupportedAudioIntentHandler = {
                 );
     },
     async handle(handlerInput) {
-        const speakOutput = 'Scusa, non posso ancora supportare questa funzione.';
+        const speakOutput = getLocalizedString(handlerInput, 'UNSUPPORTED_FEATURE');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -181,7 +212,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Puoi dire "riproduci audio" per iniziare a riprodurre musica! Come posso aiutarti?';
+        const speakOutput = getLocalizedString(handlerInput, 'HELP_MESSAGE');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -197,7 +228,7 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = 'Arrivederci!';
+        const speakOutput = getLocalizedString(handlerInput, 'GOODBYE_MESSAGE');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -289,7 +320,7 @@ const PlaybackControllerHandler = {
         };
     } catch (error) {
         console.error('Error fetching latest URL:', error);
-        const speakOutput = 'Sorry, I could not retrieve the latest music stream from the API. Please check your setup.';
+        const speakOutput = getLocalizedString(handlerInput, 'ERROR_RETRIEVING_STREAM');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .getResponse();
@@ -350,7 +381,7 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Scusa, non conosco questo comando. Per favore riprova.';
+        const speakOutput = getLocalizedString(handlerInput, 'FALLBACK_MESSAGE');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -384,7 +415,7 @@ const IntentReflectorHandler = {
     },
     handle(handlerInput) {
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = `Hai appena attivato ${intentName}`;
+        const speakOutput = `${getLocalizedString(handlerInput, 'INTENT_REFLECTOR')} ${intentName}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -402,7 +433,7 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = 'Scusa, ho avuto problemi a eseguire la tua richiesta. Per favore riprova.';
+        const speakOutput = getLocalizedString(handlerInput, 'ERROR_MESSAGE');
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
         return handlerInput.responseBuilder
